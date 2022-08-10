@@ -1,0 +1,13 @@
+release: false
+name: 'todo-app'
+http_port: 8888
+log:
+  dir: 'logs'
+  file: 'app.log'
+db:
+  login: ''
+  pass: ''
+  host: ''
+  port: ''
+  name: ''
+  args: 'parseTime=true&multiStatements=true'
