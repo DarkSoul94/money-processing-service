@@ -10,6 +10,7 @@ func RegisterHTTPEndpoints(router *gin.RouterGroup, uc app.Usecase) {
 	h := NewHandler(uc)
 
 	router.POST("/client", h.CreateClient)
-
+	router.GET("/client/:id", h.GetClientByID)
+	
 	router.POST("/account", h.CreateAccount)
 }

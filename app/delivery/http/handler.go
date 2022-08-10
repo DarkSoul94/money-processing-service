@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/DarkSoul94/money-processing-service/app"
 	"github.com/gin-gonic/gin"
@@ -38,6 +39,25 @@ func (h *Handler) CreateClient(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "client_id": id})
 }
 
+func (h *Handler) GetClientByID(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil || id == 0 {
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"status": "error", "error": "Invalid value in param 'id'"})
+		return
+	}
+
+	ctx, cansel := context.WithCancel(c)
+	defer cansel()
+
+	mClient, idList, err := h.uc.GetClientByID(ctx, id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{"status": "error", "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "client": h.toOutClient(mClient, idList)})
+}
+
 func (h *Handler) CreateAccount(c *gin.Context) {
 	var account newAccount
 
@@ -56,5 +76,4 @@ func (h *Handler) CreateAccount(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "account_id": id})
-
 }

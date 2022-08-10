@@ -17,6 +17,13 @@ func (r *postgreRepo) toDbClient(client models.Client) dbClient {
 	}
 }
 
+func (r *postgreRepo) toModelClient(client dbClient) models.Client {
+	return models.Client{
+		Id:   client.Id,
+		Name: client.Name,
+	}
+}
+
 type dbAccount struct {
 	Id         uint64          `db:"id"`
 	ClientID   uint64          `db:"client_id"`

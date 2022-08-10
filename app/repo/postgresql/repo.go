@@ -38,14 +38,59 @@ func (r *postgreRepo) CreateClient(ctx context.Context, mClient models.Client) (
 	if err != nil {
 		logger.LogError(
 			"Create client",
-			"app/repo/postgres/repo",
+			"app/repo/postgresql/repo",
 			fmt.Sprintf("name: %s", client.Name),
 			err,
 		)
-		return 0, errors.New("failed create client")
+		return 0, errors.New("failed insert client to db")
 	}
 
 	return uint64(id), nil
+}
+
+func (r *postgreRepo) GetClientByID(ctx context.Context, id uint64) (models.Client, error) {
+	var (
+		client dbClient
+		query  string
+		err    error
+	)
+
+	query = `SELECT * FROM clients WHERE id=$1`
+	err = r.db.GetContext(ctx, &client, query, id)
+	if err != nil {
+		logger.LogError(
+			"select client by id",
+			"app/repo/postgresql/repo",
+			fmt.Sprintf("client_id: %d", id),
+			err,
+		)
+		return models.Client{}, errors.New("failed select client from db")
+	}
+
+	return r.toModelClient(client), nil
+}
+
+func (r *postgreRepo) GetClientAccountsID(ctx context.Context, id uint64) ([]uint64, error) {
+	var (
+		idList []uint64
+		query  string
+		err    error
+	)
+
+	query = "SELECT id FROM accounts WHERE client_id=$1"
+
+	err = r.db.SelectContext(ctx, &idList, query, id)
+	if err != nil {
+		logger.LogError(
+			"select client accounts id",
+			"app/repo/postgresql/repo",
+			fmt.Sprintf("client_id: %d", id),
+			err,
+		)
+		return nil, errors.New("failed select client accounts id from db")
+	}
+
+	return idList, nil
 }
 
 func (r *postgreRepo) CreateAccount(ctx context.Context, mAccount models.Account) (uint64, error) {
@@ -64,15 +109,14 @@ func (r *postgreRepo) CreateAccount(ctx context.Context, mAccount models.Account
 	if err != nil {
 		logger.LogError(
 			"Create account",
-			"app/repo/postgres/repo",
+			"app/repo/postgresql/repo",
 			fmt.Sprintf("client_id: %d, currency_id: %d, ballance: %d", account.ClientID, account.CurrencyID, account.Ballance),
 			err,
 		)
-		return 0, errors.New("failed create account")
+		return 0, errors.New("failed insert account to db")
 	}
 
 	return uint64(id), nil
-
 }
 
 func (r *postgreRepo) Close() error {
