@@ -9,8 +9,5 @@ import (
 func RegisterHTTPEndpoints(router *gin.RouterGroup, uc app.Usecase) {
 	h := NewHandler(uc)
 
-	apiEndpoints := router.Group("/api")
-	{
-		apiEndpoints.POST("/", h.HelloWorld)
-	}
+	router.POST("/client", h.CreateClient)
 }

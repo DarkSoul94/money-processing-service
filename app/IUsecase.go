@@ -1,8 +1,11 @@
 package app
 
-import "context"
+import (
+	"context"
 
-// Usecase ...
+	"github.com/DarkSoul94/money-processing-service/models"
+)
+
 type Usecase interface {
-	HelloWorld(ctx context.Context)
+	CreateClient(ctx context.Context, client models.Client) (uint64, error)
 }

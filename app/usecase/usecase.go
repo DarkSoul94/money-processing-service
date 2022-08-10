@@ -4,21 +4,19 @@ import (
 	"context"
 
 	"github.com/DarkSoul94/money-processing-service/app"
+	"github.com/DarkSoul94/money-processing-service/models"
 )
 
-// Usecase ...
 type usecase struct {
 	repo app.Repository
 }
 
-// NewUsecase ...
 func NewUsecase(repo app.Repository) app.Usecase {
 	return &usecase{
 		repo: repo,
 	}
 }
 
-// HelloWorld ...
-func (u *usecase) HelloWorld(c context.Context) {
-	println("Hello")
+func (u *usecase) CreateClient(ctx context.Context, client models.Client) (uint64, error) {
+	return u.repo.CreateClient(ctx, client)
 }
