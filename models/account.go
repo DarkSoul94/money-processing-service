@@ -1,6 +1,6 @@
 package models
 
-import "google.golang.org/genproto/googleapis/type/decimal"
+import "github.com/shopspring/decimal"
 
 type Account struct {
 	Id       uint64

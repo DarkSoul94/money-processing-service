@@ -1,0 +1,13 @@
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS currencys (
+  id SERIAL PRIMARY KEY,
+  name CHARACTER VARYING(30) NOT NULL
+);
+
+INSERT INTO currencys (id, name) VALUES 
+(1, 'USD'),
+(2, 'COP'),
+(3, 'MXN');
+
+COMMIT;

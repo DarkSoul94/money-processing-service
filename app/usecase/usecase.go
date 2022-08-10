@@ -20,3 +20,7 @@ func NewUsecase(repo app.Repository) app.Usecase {
 func (u *usecase) CreateClient(ctx context.Context, client models.Client) (uint64, error) {
 	return u.repo.CreateClient(ctx, client)
 }
+
+func (u *usecase) CreateAccount(ctx context.Context, account models.Account) (uint64, error) {
+	return u.repo.CreateAccount(ctx, account)
+}

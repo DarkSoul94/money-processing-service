@@ -42,6 +42,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
+	github.com/shopspring/decimal v1.3.1
 	github.com/sirupsen/logrus v1.8.1
 	golang.org/x/crypto v0.0.0-20211117183948-ae814b36b871 // indirect
 	google.golang.org/genproto v0.0.0-20220808204814-fd01256a5276

@@ -45,8 +45,34 @@ func (r *postgreRepo) CreateClient(ctx context.Context, mClient models.Client) (
 		return 0, errors.New("failed create client")
 	}
 
-	fmt.Println(id)
 	return uint64(id), nil
+}
+
+func (r *postgreRepo) CreateAccount(ctx context.Context, mAccount models.Account) (uint64, error) {
+	var (
+		account dbAccount
+		query   string
+		id      int64
+		err     error
+	)
+
+	account = r.toDbAccount(mAccount)
+
+	query = `INSERT INTO accounts (client_id, currency_id, ballance) VALUES ($1, $2, $3) RETURNING id`
+
+	err = r.db.GetContext(ctx, &id, query, account.ClientID, account.CurrencyID, account.Ballance)
+	if err != nil {
+		logger.LogError(
+			"Create account",
+			"app/repo/postgres/repo",
+			fmt.Sprintf("client_id: %d, currency_id: %d, ballance: %d", account.ClientID, account.CurrencyID, account.Ballance),
+			err,
+		)
+		return 0, errors.New("failed create account")
+	}
+
+	return uint64(id), nil
+
 }
 
 func (r *postgreRepo) Close() error {

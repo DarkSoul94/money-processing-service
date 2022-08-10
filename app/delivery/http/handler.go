@@ -37,3 +37,24 @@ func (h *Handler) CreateClient(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "client_id": id})
 }
+
+func (h *Handler) CreateAccount(c *gin.Context) {
+	var account newAccount
+
+	if err := c.BindJSON(&account); err != nil {
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"status": "error", "error": err.Error()})
+		return
+	}
+
+	ctx, cansel := context.WithCancel(c)
+	defer cansel()
+
+	id, err := h.uc.CreateAccount(ctx, h.toModelAccount(account))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{"status": "error", "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "account_id": id})
+
+}
