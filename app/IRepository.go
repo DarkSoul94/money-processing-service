@@ -12,6 +12,7 @@ type Repository interface {
 
 	CreateAccount(ctx context.Context, mAccount models.Account) (uint64, error)
 	GetClientAccountsID(ctx context.Context, id uint64) ([]uint64, error)
-
+	GetAccountByID(ctx context.Context, id uint64) (models.Account, error)
+	
 	Close() error
 }

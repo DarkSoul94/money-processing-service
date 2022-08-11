@@ -93,6 +93,29 @@ func (r *postgreRepo) GetClientAccountsID(ctx context.Context, id uint64) ([]uin
 	return idList, nil
 }
 
+func (r *postgreRepo) GetCurrencyByID(ctx context.Context, id uint) (models.Currency, error) {
+	var (
+		currency dbCurrency
+		query    string
+		err      error
+	)
+
+	query = `SELECT * FROM currencys WHERE id=$1`
+
+	err = r.db.GetContext(ctx, &currency, query, id)
+	if err != nil {
+		logger.LogError(
+			"select currency",
+			"app/repo/postgresql/repo",
+			fmt.Sprintf("currency_id: %d", id),
+			err,
+		)
+		return models.Currency{}, errors.New("failed select currency from db")
+	}
+
+	return r.toModelCurrency(currency), nil
+}
+
 func (r *postgreRepo) CreateAccount(ctx context.Context, mAccount models.Account) (uint64, error) {
 	var (
 		account dbAccount
@@ -117,6 +140,29 @@ func (r *postgreRepo) CreateAccount(ctx context.Context, mAccount models.Account
 	}
 
 	return uint64(id), nil
+}
+
+func (r *postgreRepo) GetAccountByID(ctx context.Context, id uint64) (models.Account, error) {
+	var (
+		account dbAccount
+		query   string
+		err     error
+	)
+
+	query = `SELECT * FROM accounts WHERE id = $1`
+
+	err = r.db.GetContext(ctx, &account, query, id)
+	if err != nil {
+		logger.LogError(
+			"Get account",
+			"app/repo/postgresql/repo",
+			fmt.Sprintf("account_id: %d", id),
+			err,
+		)
+		return models.Account{}, errors.New("failed select account from db")
+	}
+
+	return r.toModelAccount(ctx, account)
 }
 
 func (r *postgreRepo) Close() error {

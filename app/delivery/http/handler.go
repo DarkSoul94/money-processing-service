@@ -55,7 +55,7 @@ func (h *Handler) GetClientByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "client": h.toOutClient(mClient, idList)})
+	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "client": h.toOutClient(mClient), "accounts_id": idList})
 }
 
 func (h *Handler) CreateAccount(c *gin.Context) {
@@ -76,4 +76,23 @@ func (h *Handler) CreateAccount(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "account_id": id})
+}
+
+func (h *Handler) GetAccountByID(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil || id == 0 {
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"status": "error", "error": "Invalid value in param 'id'"})
+		return
+	}
+
+	ctx, cansel := context.WithCancel(c)
+	defer cansel()
+
+	mAccount, err := h.uc.GetAccountByID(ctx, id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{"status": "error", "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "account": h.toOutAccount(mAccount)})
 }

@@ -16,16 +16,14 @@ func (h *Handler) toModelClient(client newClient) models.Client {
 }
 
 type outClient struct {
-	Id         uint64   `json:"id"`
-	Name       string   `json:"name"`
-	AccountsID []uint64 `json:"accounts_id"`
+	Id   uint64 `json:"id"`
+	Name string `json:"name"`
 }
 
-func (h *Handler) toOutClient(client models.Client, idList []uint64) outClient {
+func (h *Handler) toOutClient(client models.Client) outClient {
 	return outClient{
-		Id:         client.Id,
-		Name:       client.Name,
-		AccountsID: idList,
+		Id:   client.Id,
+		Name: client.Name,
 	}
 }
 
@@ -43,5 +41,33 @@ func (h *Handler) toModelAccount(account newAccount) models.Account {
 			Id: account.CurrencyID,
 		},
 		Ballance: decimal.Decimal{},
+	}
+}
+
+type outCurrency struct {
+	Id   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
+func (h *Handler) toOutCurrency(currency models.Currency) outCurrency {
+	return outCurrency{
+		Id:   currency.Id,
+		Name: currency.Name,
+	}
+}
+
+type outAccount struct {
+	Id       uint64          `json:"id"`
+	Client   outClient       `json:"client"`
+	Currency outCurrency     `json:"currency"`
+	Ballance decimal.Decimal `json:"ballance"`
+}
+
+func (h *Handler) toOutAccount(account models.Account) outAccount {
+	return outAccount{
+		Id:       account.Id,
+		Client:   h.toOutClient(account.Client),
+		Currency: h.toOutCurrency(account.Currency),
+		Ballance: account.Ballance,
 	}
 }

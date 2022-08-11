@@ -38,3 +38,7 @@ func (u *usecase) GetClientByID(ctx context.Context, id uint64) (models.Client, 
 func (u *usecase) CreateAccount(ctx context.Context, account models.Account) (uint64, error) {
 	return u.repo.CreateAccount(ctx, account)
 }
+
+func (u *usecase) GetAccountByID(ctx context.Context, id uint64) (models.Account, error) {
+	return u.repo.GetAccountByID(ctx, id)
+}
