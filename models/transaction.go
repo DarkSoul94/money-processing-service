@@ -1,13 +1,16 @@
 package models
 
-import "google.golang.org/genproto/googleapis/type/decimal"
+import (
+	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
+)
 
 type Transaction struct {
-	Id         uint64
-	Type       TransactionType
-	From       Account
-	To         Account
-	MoneyValue decimal.Decimal
+	Id     uuid.UUID
+	Type   TransactionType
+	From   Account
+	To     Account
+	Amount decimal.Decimal
 }
 
 type TransactionType int

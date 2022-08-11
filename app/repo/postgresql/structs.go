@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DarkSoul94/money-processing-service/models"
+	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
 
@@ -71,4 +72,22 @@ func (r *postgreRepo) toModelAccount(ctx context.Context, account dbAccount) (mo
 		Currency: currency,
 		Ballance: account.Ballance,
 	}, nil
+}
+
+type dbTransaction struct {
+	Id     uuid.UUID       `db:"id"`
+	Type   int             `db:"type"`
+	From   uint64          `db:"from_account_id"`
+	To     uint64          `db:"to_account_id"`
+	Amount decimal.Decimal `db:"amount"`
+}
+
+func (r *postgreRepo) toDbTransaction(transaction models.Transaction) dbTransaction {
+	return dbTransaction{
+		Id:     transaction.Id,
+		Type:   int(transaction.Type),
+		From:   transaction.From.Id,
+		To:     transaction.To.Id,
+		Amount: transaction.Amount,
+	}
 }

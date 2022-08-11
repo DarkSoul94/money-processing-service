@@ -9,7 +9,9 @@ import (
 	"github.com/DarkSoul94/money-processing-service/app"
 	"github.com/DarkSoul94/money-processing-service/models"
 	"github.com/DarkSoul94/money-processing-service/pkg/logger"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/shopspring/decimal"
 )
 
 type postgreRepo struct {
@@ -163,6 +165,137 @@ func (r *postgreRepo) GetAccountByID(ctx context.Context, id uint64) (models.Acc
 	}
 
 	return r.toModelAccount(ctx, account)
+}
+
+func (r *postgreRepo) UpdateBalance(ctx context.Context, transactionType models.TransactionType, accountID uint64, amount decimal.Decimal) error {
+	var (
+		query string
+		err   error
+	)
+
+	switch transactionType {
+	case models.Deposit:
+		query = `UPDATE accounts SET ballance = ballance + $1 WHERE id = $2`
+	case models.Withdraw:
+		query = `UPDATE accounts SET ballance = ballance - $1 WHERE id = $2`
+	}
+
+	_, err = r.db.ExecContext(ctx, query, amount, accountID)
+	if err != nil {
+		logger.LogError(
+			"Update balance",
+			"app/repo/postgresql/repo",
+			fmt.Sprintf("account_id: %d, amount: %d", accountID, amount),
+			err,
+		)
+		return errors.New("failed update ballance in db")
+	}
+
+	return nil
+}
+
+func (r *postgreRepo) TransferMoney(ctx context.Context, fromAccountID uint64, toAccountID uint64, amount decimal.Decimal) error {
+	var (
+		query string
+		err   error
+	)
+
+	tx, err := r.db.Begin()
+	if err != nil {
+		logger.LogError(
+			"Begin transaction",
+			"app/repo/postgresql/repo",
+			"",
+			err,
+		)
+		return errors.New("failed begin transaction")
+	}
+
+	query = `UPDATE accounts SET ballance = ballance - $1 WHERE id = $2;`
+	_, err = tx.ExecContext(ctx, query, amount, fromAccountID)
+	if err != nil {
+		logger.LogError(
+			"Withdraw money",
+			"app/repo/postgresql/repo",
+			fmt.Sprintf("from account id: %d, amount: %d", fromAccountID, amount),
+			err,
+		)
+
+		err = tx.Rollback()
+		if err != nil {
+			logger.LogError(
+				"Rollback transaction",
+				"app/repo/postgresql/repo",
+				"",
+				err,
+			)
+			return errors.New("failed rollback transaction")
+		}
+
+		return errors.New("failed withdraw money")
+	}
+
+	query = `UPDATE accounts SET ballance = ballance + $1 WHERE id = $2;`
+	_, err = tx.ExecContext(ctx, query, amount, toAccountID)
+	if err != nil {
+		logger.LogError(
+			"Deposit money",
+			"app/repo/postgresql/repo",
+			fmt.Sprintf("to account id: %d, amount: %d", toAccountID, amount),
+			err,
+		)
+
+		err = tx.Rollback()
+		if err != nil {
+			logger.LogError(
+				"Rollback transaction",
+				"app/repo/postgresql/repo",
+				"",
+				err,
+			)
+			return errors.New("failed rollback transaction")
+		}
+
+		return errors.New("failed deposit money")
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		logger.LogError(
+			"Commit transaction",
+			"app/repo/postgresql/repo",
+			"",
+			err,
+		)
+		return errors.New("failed commit transaction")
+	}
+
+	return nil
+}
+
+func (r *postgreRepo) CreateTransaction(ctx context.Context, mTransaction models.Transaction) (uuid.UUID, error) {
+	var (
+		id    uuid.UUID
+		query string
+		err   error
+	)
+
+	query = `INSERT INTO transactions (type, from_account_id, to_account_id, amount) VALUES ($1, $2, $3, $4) RETURNING id`
+
+	dbTransaction := r.toDbTransaction(mTransaction)
+
+	err = r.db.GetContext(ctx, &id, query, dbTransaction.Type, dbTransaction.From, dbTransaction.To, dbTransaction.Amount)
+	if err != nil {
+		logger.LogError(
+			"Create transaction",
+			"app/repo/postgresql/repo",
+			fmt.Sprintf("type: %d,from: %d,to: %d,value: %d,", dbTransaction.Type, dbTransaction.From, dbTransaction.To, dbTransaction.Amount),
+			err,
+		)
+		return uuid.Nil, errors.New("failed insert transaction to db")
+	}
+
+	return id, nil
 }
 
 func (r *postgreRepo) Close() error {

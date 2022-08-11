@@ -15,4 +15,5 @@ func RegisterHTTPEndpoints(router *gin.RouterGroup, uc app.Usecase) {
 	router.POST("/account", h.CreateAccount)
 	router.GET("/account/:id", h.GetAccountByID)
 
+	router.POST("/transaction", h.CreateTransaction)
 }

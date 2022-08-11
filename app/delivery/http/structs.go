@@ -71,3 +71,23 @@ func (h *Handler) toOutAccount(account models.Account) outAccount {
 		Ballance: account.Ballance,
 	}
 }
+
+type newTransaction struct {
+	Type          int             `json:"type"`
+	FromAccountID uint64          `json:"from_account_id,omitempty"`
+	ToAccountID   uint64          `json:"to_account_id,omitempty"`
+	Amount        decimal.Decimal `json:"amount"`
+}
+
+func (h *Handler) toModelTransction(transaction newTransaction) models.Transaction {
+	return models.Transaction{
+		Type: models.TransactionType(transaction.Type),
+		From: models.Account{
+			Id: transaction.FromAccountID,
+		},
+		To: models.Account{
+			Id: transaction.ToAccountID,
+		},
+		Amount: transaction.Amount,
+	}
+}

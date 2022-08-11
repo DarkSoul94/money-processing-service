@@ -96,3 +96,24 @@ func (h *Handler) GetAccountByID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "account": h.toOutAccount(mAccount)})
 }
+
+func (h *Handler) CreateTransaction(c *gin.Context) {
+	var transaction newTransaction
+
+	if err := c.BindJSON(&transaction); err != nil {
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"status": "error", "error": err.Error()})
+		return
+	}
+
+	ctx, cansel := context.WithCancel(c)
+	defer cansel()
+
+	id, err := h.uc.CreateTransaction(ctx, h.toModelTransction(transaction))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{"status": "error", "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "transaction_id": id})
+
+}
