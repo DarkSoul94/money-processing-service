@@ -102,6 +102,10 @@ func (u *usecase) withdrawMoney(ctx context.Context, transaction models.Transact
 }
 
 func (u *usecase) transferMoney(ctx context.Context, transaction models.Transaction) (uuid.UUID, error) {
+	if transaction.From.Id == transaction.To.Id {
+		return uuid.UUID{}, errors.New("accounts must by different")
+	}
+
 	fromAccount, err := u.repo.GetAccountByID(ctx, transaction.From.Id)
 	if err != nil {
 		return uuid.UUID{}, err
