@@ -73,7 +73,7 @@ func (r *postgreRepo) toModelAccount(ctx context.Context, account dbAccount) (mo
 type dbTransaction struct {
 	Id        uuid.UUID       `db:"id"`
 	CreatedAt time.Time       `db:"created_at"`
-	Type      int             `db:"type"`
+	Type      uint            `db:"type"`
 	From      sql.NullInt64   `db:"from_account_id"`
 	To        sql.NullInt64   `db:"to_account_id"`
 	Amount    decimal.Decimal `db:"amount"`
@@ -83,7 +83,7 @@ func (r *postgreRepo) toDbTransaction(mTransaction models.Transaction) dbTransac
 	transaction := dbTransaction{
 		Id:        mTransaction.Id,
 		CreatedAt: mTransaction.CreatedAt,
-		Type:      int(mTransaction.Type),
+		Type:      mTransaction.Type.Id,
 		Amount:    mTransaction.Amount,
 	}
 
@@ -108,7 +108,7 @@ func (r *postgreRepo) toModelTransaction(transaction dbTransaction) models.Trans
 	mTransaction := models.Transaction{
 		Id:        transaction.Id,
 		CreatedAt: transaction.CreatedAt,
-		Type:      models.TransactionType(transaction.Type),
+		Type:      models.TransactionType{Id: transaction.Type},
 		Amount:    transaction.Amount,
 	}
 

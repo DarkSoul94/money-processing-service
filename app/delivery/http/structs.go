@@ -60,7 +60,7 @@ func (h *Handler) toOutAccount(account models.Account) outAccount {
 }
 
 type newTransaction struct {
-	Type          int             `json:"type"`
+	Type          uint            `json:"type"`
 	FromAccountID uint64          `json:"from_account_id,omitempty"`
 	ToAccountID   uint64          `json:"to_account_id,omitempty"`
 	Amount        decimal.Decimal `json:"amount"`
@@ -68,7 +68,7 @@ type newTransaction struct {
 
 func (h *Handler) toModelTransction(transaction newTransaction) models.Transaction {
 	return models.Transaction{
-		Type: models.TransactionType(transaction.Type),
+		Type: models.TransactionType{Id: transaction.Type},
 		From: models.Account{
 			Id: transaction.FromAccountID,
 		},
@@ -97,13 +97,13 @@ func (h *Handler) toOutTransaction(mTransaction models.Transaction) outTransacti
 		Amount:    mTransaction.Amount.String(),
 	}
 
-	switch mTransaction.Type {
-	case models.Deposit:
-		transaction.Type = "Deposit"
-	case models.Withdraw:
-		transaction.Type = "Withdraw"
-	case models.Transfer:
-		transaction.Type = "Transfer"
+	switch mTransaction.Type.Id {
+	case models.Deposit.Id:
+		transaction.Type = models.Deposit.Name
+	case models.Withdraw.Id:
+		transaction.Type = models.Withdraw.Name
+	case models.Transfer.Id:
+		transaction.Type = models.Transfer.Name
 	}
 
 	return transaction

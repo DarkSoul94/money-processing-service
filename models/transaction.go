@@ -16,10 +16,13 @@ type Transaction struct {
 	Amount    decimal.Decimal
 }
 
-type TransactionType int
+type TransactionType struct {
+	Id   uint
+	Name string
+}
 
-const (
-	Deposit TransactionType = iota
-	Withdraw
-	Transfer
+var (
+	Deposit  TransactionType = TransactionType{Id: 0, Name: "Deposit"}
+	Withdraw TransactionType = TransactionType{Id: 1, Name: "Withdraw"}
+	Transfer TransactionType = TransactionType{Id: 2, Name: "Transfer"}
 )

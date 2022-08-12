@@ -54,12 +54,12 @@ func (u *usecase) GetAccountByID(ctx context.Context, id uint64) (models.Account
 func (u *usecase) CreateTransaction(ctx context.Context, transaction models.Transaction) (uuid.UUID, error) {
 	transaction.CreatedAt = time.Now()
 
-	switch transaction.Type {
-	case models.Deposit:
+	switch transaction.Type.Id {
+	case models.Deposit.Id:
 		return u.depositMoney(ctx, transaction)
-	case models.Withdraw:
+	case models.Withdraw.Id:
 		return u.withdrawMoney(ctx, transaction)
-	case models.Transfer:
+	case models.Transfer.Id:
 		return u.transferMoney(ctx, transaction)
 	}
 
