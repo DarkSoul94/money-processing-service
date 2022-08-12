@@ -16,7 +16,7 @@ type Repository interface {
 	GetClientAccountsID(ctx context.Context, id uint64) ([]uint64, error)
 	GetAccountByID(ctx context.Context, id uint64) (models.Account, error)
 
-	UpdateBalance(ctx context.Context, transactionType models.TransactionType, accountID uint64, amount decimal.Decimal) error
+	UpdateBalance(ctx context.Context, accountID uint64, newBalance decimal.Decimal) error
 	TransferMoney(ctx context.Context, fromAccountID uint64, toAccountID uint64, amount decimal.Decimal) error
 
 	CreateTransaction(ctx context.Context, mTransaction models.Transaction) (uuid.UUID, error)

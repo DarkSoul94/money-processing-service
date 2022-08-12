@@ -167,25 +167,20 @@ func (r *postgreRepo) GetAccountByID(ctx context.Context, id uint64) (models.Acc
 	return r.toModelAccount(ctx, account)
 }
 
-func (r *postgreRepo) UpdateBalance(ctx context.Context, transactionType models.TransactionType, accountID uint64, amount decimal.Decimal) error {
+func (r *postgreRepo) UpdateBalance(ctx context.Context, accountID uint64, newBalance decimal.Decimal) error {
 	var (
 		query string
 		err   error
 	)
 
-	switch transactionType {
-	case models.Deposit:
-		query = `UPDATE accounts SET ballance = ballance + $1 WHERE id = $2`
-	case models.Withdraw:
-		query = `UPDATE accounts SET ballance = ballance - $1 WHERE id = $2`
-	}
+	query = `UPDATE accounts SET ballance = $1 WHERE id = $2`
 
-	_, err = r.db.ExecContext(ctx, query, amount, accountID)
+	_, err = r.db.ExecContext(ctx, query, newBalance, accountID)
 	if err != nil {
 		logger.LogError(
 			"Update balance",
 			"app/repo/postgresql/repo",
-			fmt.Sprintf("account_id: %d, amount: %d", accountID, amount),
+			fmt.Sprintf("account_id: %d, new balance: %d", accountID, newBalance),
 			err,
 		)
 		return errors.New("failed update ballance in db")

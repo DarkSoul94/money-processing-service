@@ -71,7 +71,12 @@ func (u *usecase) depositMoney(ctx context.Context, transaction models.Transacti
 		Id: 0,
 	}
 
-	err := u.repo.UpdateBalance(ctx, transaction.Type, transaction.To.Id, transaction.Amount)
+	account, err := u.repo.GetAccountByID(ctx, transaction.To.Id)
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+
+	err = u.repo.UpdateBalance(ctx, transaction.To.Id, account.Ballance.Add(transaction.Amount))
 	if err != nil {
 		return uuid.UUID{}, err
 	}
@@ -93,7 +98,7 @@ func (u *usecase) withdrawMoney(ctx context.Context, transaction models.Transact
 		return uuid.UUID{}, errors.New("not enough money")
 	}
 
-	err = u.repo.UpdateBalance(ctx, transaction.Type, transaction.From.Id, transaction.Amount)
+	err = u.repo.UpdateBalance(ctx, transaction.From.Id, account.Ballance.Sub(transaction.Amount))
 	if err != nil {
 		return uuid.UUID{}, err
 	}
