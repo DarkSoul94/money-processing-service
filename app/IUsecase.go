@@ -15,4 +15,5 @@ type Usecase interface {
 	GetAccountByID(ctx context.Context, id uint64) (models.Account, error)
 
 	CreateTransaction(ctx context.Context, transaction models.Transaction) (uuid.UUID, error)
+	GetTransactionsListByAccountID(ctx context.Context, accountID uint64) ([]models.Transaction, error)
 }

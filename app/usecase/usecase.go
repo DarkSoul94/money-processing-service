@@ -115,3 +115,7 @@ func (u *usecase) transferMoney(ctx context.Context, transaction models.Transact
 
 	return u.repo.CreateTransaction(ctx, transaction)
 }
+
+func (u *usecase) GetTransactionsListByAccountID(ctx context.Context, accountID uint64) ([]models.Transaction, error) {
+	return u.repo.GetTransactionsListByAccountID(ctx, accountID)
+}

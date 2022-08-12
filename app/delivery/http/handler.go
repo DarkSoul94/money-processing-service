@@ -115,5 +115,28 @@ func (h *Handler) CreateTransaction(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "transaction_id": id})
+}
 
+func (h *Handler) GetTransactionsListByAccountID(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil || id == 0 {
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"status": "error", "error": "Invalid value in param 'id'"})
+		return
+	}
+
+	ctx, cansel := context.WithCancel(c)
+	defer cansel()
+
+	mTransactionsList, err := h.uc.GetTransactionsListByAccountID(ctx, id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{"status": "error", "error": err.Error()})
+		return
+	}
+
+	outTransactionsList := make([]outTransaction, 0)
+	for _, mTransaction := range mTransactionsList {
+		outTransactionsList = append(outTransactionsList, h.toOutTransaction(mTransaction))
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "transactions": outTransactionsList})
 }

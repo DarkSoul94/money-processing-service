@@ -91,3 +91,31 @@ func (h *Handler) toModelTransction(transaction newTransaction) models.Transacti
 		Amount: transaction.Amount,
 	}
 }
+
+type outTransaction struct {
+	Id     string `json:"id"`
+	Type   string `json:"type"`
+	From   string `json:"from"`
+	To     string `json:"to"`
+	Amount string `json:"amount"`
+}
+
+func (h *Handler) toOutTransaction(mTransaction models.Transaction) outTransaction {
+	transaction := outTransaction{
+		Id:     mTransaction.Id.String(),
+		From:   mTransaction.From.Client.Name,
+		To:     mTransaction.To.Client.Name,
+		Amount: mTransaction.Amount.String(),
+	}
+
+	switch mTransaction.Type {
+	case models.Deposit:
+		transaction.Type = "Deposit"
+	case models.Withdraw:
+		transaction.Type = "Withdraw"
+	case models.Transfer:
+		transaction.Type = "Transfer"
+	}
+
+	return transaction
+}

@@ -298,6 +298,57 @@ func (r *postgreRepo) CreateTransaction(ctx context.Context, mTransaction models
 	return id, nil
 }
 
+func (r *postgreRepo) GetTransactionsListByAccountID(ctx context.Context, accountID uint64) ([]models.Transaction, error) {
+	var (
+		dbTransactionsList = make([]dbTransaction, 0)
+		mTransactionsList  = make([]models.Transaction, 0)
+		query              string
+		err                error
+	)
+
+	query = `SELECT * FROM transactions WHERE from_account_id = $1 OR to_account_id = $1`
+
+	err = r.db.SelectContext(ctx, &dbTransactionsList, query, accountID)
+	if err != nil {
+		logger.LogError(
+			"Get transactions list",
+			"app/repo/postgresql/repo",
+			fmt.Sprintf("account id: %d", accountID),
+			err,
+		)
+		return nil, errors.New("failed select transactions list from db")
+	}
+
+	for _, dbTransaction := range dbTransactionsList {
+		mTransaction := r.toModelTransaction(dbTransaction)
+		mTransaction.From, err = r.GetAccountByID(ctx, mTransaction.From.Id)
+		if err != nil {
+			logger.LogError(
+				"Get 'from' account",
+				"app/repo/postgresql/repo",
+				fmt.Sprintf("account id: %d", mTransaction.From.Id),
+				err,
+			)
+			return nil, errors.New("failed select 'from' account from db")
+		}
+
+		mTransaction.To, err = r.GetAccountByID(ctx, mTransaction.To.Id)
+		if err != nil {
+			logger.LogError(
+				"Get 'to' account",
+				"app/repo/postgresql/repo",
+				fmt.Sprintf("account id: %d", mTransaction.To.Id),
+				err,
+			)
+			return nil, errors.New("failed select 'to' account from db")
+		}
+
+		mTransactionsList = append(mTransactionsList, mTransaction)
+	}
+
+	return mTransactionsList, nil
+}
+
 func (r *postgreRepo) Close() error {
 	return r.db.Close()
 }

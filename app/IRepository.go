@@ -20,6 +20,7 @@ type Repository interface {
 	TransferMoney(ctx context.Context, fromAccountID uint64, toAccountID uint64, amount decimal.Decimal) error
 
 	CreateTransaction(ctx context.Context, mTransaction models.Transaction) (uuid.UUID, error)
+	GetTransactionsListByAccountID(ctx context.Context, accountID uint64) ([]models.Transaction, error)
 
 	Close() error
 }

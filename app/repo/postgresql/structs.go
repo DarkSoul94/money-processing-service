@@ -91,3 +91,17 @@ func (r *postgreRepo) toDbTransaction(transaction models.Transaction) dbTransact
 		Amount: transaction.Amount,
 	}
 }
+
+func (r *postgreRepo) toModelTransaction(transaction dbTransaction) models.Transaction {
+	return models.Transaction{
+		Id:   transaction.Id,
+		Type: models.TransactionType(transaction.Type),
+		From: models.Account{
+			Id: transaction.From,
+		},
+		To: models.Account{
+			Id: transaction.To,
+		},
+		Amount: transaction.Amount,
+	}
+}
