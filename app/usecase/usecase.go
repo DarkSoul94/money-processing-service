@@ -129,7 +129,9 @@ func (u *usecase) transferMoney(ctx context.Context, transaction models.Transact
 		return uuid.UUID{}, errors.New("not enough money")
 	}
 
-	err = u.repo.TransferMoney(ctx, transaction.From.Id, transaction.To.Id, transaction.Amount)
+	fromAccount.Ballance = fromAccount.Ballance.Sub(transaction.Amount)
+	toAccount.Ballance = toAccount.Ballance.Add(transaction.Amount)
+	err = u.repo.TransferMoney(ctx, fromAccount, toAccount)
 	if err != nil {
 		return uuid.UUID{}, err
 	}

@@ -189,7 +189,7 @@ func (r *postgreRepo) UpdateBalance(ctx context.Context, accountID uint64, newBa
 	return nil
 }
 
-func (r *postgreRepo) TransferMoney(ctx context.Context, fromAccountID uint64, toAccountID uint64, amount decimal.Decimal) error {
+func (r *postgreRepo) TransferMoney(ctx context.Context, fromAccount, toAccount models.Account) error {
 	var (
 		query string
 		err   error
@@ -206,13 +206,13 @@ func (r *postgreRepo) TransferMoney(ctx context.Context, fromAccountID uint64, t
 		return errors.New("failed begin transaction")
 	}
 
-	query = `UPDATE accounts SET ballance = ballance - $1 WHERE id = $2;`
-	_, err = tx.ExecContext(ctx, query, amount, fromAccountID)
+	query = `UPDATE accounts SET ballance = $1 WHERE id = $2;`
+	_, err = tx.ExecContext(ctx, query, fromAccount.Ballance, fromAccount.Id)
 	if err != nil {
 		logger.LogError(
 			"Withdraw money",
 			"app/repo/postgresql/repo",
-			fmt.Sprintf("from account id: %d, amount: %d", fromAccountID, amount),
+			fmt.Sprintf("from account id: %d, new balance: %s", fromAccount.Id, fromAccount.Ballance.String()),
 			err,
 		)
 
@@ -230,13 +230,13 @@ func (r *postgreRepo) TransferMoney(ctx context.Context, fromAccountID uint64, t
 		return errors.New("failed withdraw money")
 	}
 
-	query = `UPDATE accounts SET ballance = ballance + $1 WHERE id = $2;`
-	_, err = tx.ExecContext(ctx, query, amount, toAccountID)
+	query = `UPDATE accounts SET ballance = $1 WHERE id = $2;`
+	_, err = tx.ExecContext(ctx, query, toAccount.Ballance, toAccount.Id)
 	if err != nil {
 		logger.LogError(
 			"Deposit money",
 			"app/repo/postgresql/repo",
-			fmt.Sprintf("to account id: %d, amount: %d", toAccountID, amount),
+			fmt.Sprintf("to account id: %d, new balance: %s", toAccount.Id, toAccount.Ballance.String()),
 			err,
 		)
 
