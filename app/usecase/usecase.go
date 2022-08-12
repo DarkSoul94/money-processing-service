@@ -67,6 +67,10 @@ func (u *usecase) CreateTransaction(ctx context.Context, transaction models.Tran
 }
 
 func (u *usecase) depositMoney(ctx context.Context, transaction models.Transaction) (uuid.UUID, error) {
+	if transaction.To.Id == 0 {
+		return uuid.UUID{}, errors.New("invalid account")
+	}
+
 	transaction.From = models.Account{
 		Id: 0,
 	}
@@ -85,6 +89,10 @@ func (u *usecase) depositMoney(ctx context.Context, transaction models.Transacti
 }
 
 func (u *usecase) withdrawMoney(ctx context.Context, transaction models.Transaction) (uuid.UUID, error) {
+	if transaction.From.Id == 0 {
+		return uuid.UUID{}, errors.New("invalid account")
+	}
+
 	transaction.To = models.Account{
 		Id: 0,
 	}
@@ -107,6 +115,10 @@ func (u *usecase) withdrawMoney(ctx context.Context, transaction models.Transact
 }
 
 func (u *usecase) transferMoney(ctx context.Context, transaction models.Transaction) (uuid.UUID, error) {
+	if transaction.From.Id == 0 || transaction.To.Id == 0 {
+		return uuid.UUID{}, errors.New("invalid account")
+	}
+
 	if transaction.From.Id == transaction.To.Id {
 		return uuid.UUID{}, errors.New("accounts must by different")
 	}
