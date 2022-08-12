@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/DarkSoul94/money-processing-service/consts"
 	"github.com/DarkSoul94/money-processing-service/models"
 	"github.com/shopspring/decimal"
 )
@@ -79,19 +80,21 @@ func (h *Handler) toModelTransction(transaction newTransaction) models.Transacti
 }
 
 type outTransaction struct {
-	Id     string `json:"id"`
-	Type   string `json:"type"`
-	From   uint64 `json:"from"`
-	To     uint64 `json:"to"`
-	Amount string `json:"amount"`
+	Id        string `json:"id"`
+	CreatedAt string `json:"created_at"`
+	Type      string `json:"type"`
+	From      uint64 `json:"from"`
+	To        uint64 `json:"to"`
+	Amount    string `json:"amount"`
 }
 
 func (h *Handler) toOutTransaction(mTransaction models.Transaction) outTransaction {
 	transaction := outTransaction{
-		Id:     mTransaction.Id.String(),
-		From:   mTransaction.From.Id,
-		To:     mTransaction.To.Id,
-		Amount: mTransaction.Amount.String(),
+		Id:        mTransaction.Id.String(),
+		CreatedAt: mTransaction.CreatedAt.Format(consts.OutTransactionTime),
+		From:      mTransaction.From.Id,
+		To:        mTransaction.To.Id,
+		Amount:    mTransaction.Amount.String(),
 	}
 
 	switch mTransaction.Type {

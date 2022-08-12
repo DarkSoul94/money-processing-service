@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/DarkSoul94/money-processing-service/app"
 	"github.com/DarkSoul94/money-processing-service/models"
@@ -51,6 +52,8 @@ func (u *usecase) GetAccountByID(ctx context.Context, id uint64) (models.Account
 }
 
 func (u *usecase) CreateTransaction(ctx context.Context, transaction models.Transaction) (uuid.UUID, error) {
+	transaction.CreatedAt = time.Now()
+
 	switch transaction.Type {
 	case models.Deposit:
 		return u.depositMoney(ctx, transaction)
@@ -64,7 +67,9 @@ func (u *usecase) CreateTransaction(ctx context.Context, transaction models.Tran
 }
 
 func (u *usecase) depositMoney(ctx context.Context, transaction models.Transaction) (uuid.UUID, error) {
-	transaction.From = transaction.To
+	transaction.From = models.Account{
+		Id: 0,
+	}
 
 	err := u.repo.UpdateBalance(ctx, transaction.Type, transaction.To.Id, transaction.Amount)
 	if err != nil {
@@ -75,7 +80,9 @@ func (u *usecase) depositMoney(ctx context.Context, transaction models.Transacti
 }
 
 func (u *usecase) withdrawMoney(ctx context.Context, transaction models.Transaction) (uuid.UUID, error) {
-	transaction.To = transaction.From
+	transaction.To = models.Account{
+		Id: 0,
+	}
 
 	account, err := u.repo.GetAccountByID(ctx, transaction.From.Id)
 	if err != nil {

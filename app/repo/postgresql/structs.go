@@ -2,6 +2,8 @@ package postgresql
 
 import (
 	"context"
+	"database/sql"
+	"time"
 
 	"github.com/DarkSoul94/money-processing-service/models"
 	"github.com/google/uuid"
@@ -69,33 +71,58 @@ func (r *postgreRepo) toModelAccount(ctx context.Context, account dbAccount) (mo
 }
 
 type dbTransaction struct {
-	Id     uuid.UUID       `db:"id"`
-	Type   int             `db:"type"`
-	From   uint64          `db:"from_account_id"`
-	To     uint64          `db:"to_account_id"`
-	Amount decimal.Decimal `db:"amount"`
+	Id        uuid.UUID       `db:"id"`
+	CreatedAt time.Time       `db:"created_at"`
+	Type      int             `db:"type"`
+	From      sql.NullInt64   `db:"from_account_id"`
+	To        sql.NullInt64   `db:"to_account_id"`
+	Amount    decimal.Decimal `db:"amount"`
 }
 
-func (r *postgreRepo) toDbTransaction(transaction models.Transaction) dbTransaction {
-	return dbTransaction{
-		Id:     transaction.Id,
-		Type:   int(transaction.Type),
-		From:   transaction.From.Id,
-		To:     transaction.To.Id,
-		Amount: transaction.Amount,
+func (r *postgreRepo) toDbTransaction(mTransaction models.Transaction) dbTransaction {
+	transaction := dbTransaction{
+		Id:        mTransaction.Id,
+		CreatedAt: mTransaction.CreatedAt,
+		Type:      int(mTransaction.Type),
+		Amount:    mTransaction.Amount,
 	}
+
+	if mTransaction.From.Id != 0 {
+		transaction.From.Int64 = int64(mTransaction.From.Id)
+		transaction.From.Valid = true
+	} else {
+		transaction.From.Valid = false
+	}
+
+	if mTransaction.To.Id != 0 {
+		transaction.To.Int64 = int64(mTransaction.To.Id)
+		transaction.To.Valid = true
+	} else {
+		transaction.To.Valid = false
+	}
+
+	return transaction
 }
 
 func (r *postgreRepo) toModelTransaction(transaction dbTransaction) models.Transaction {
-	return models.Transaction{
-		Id:   transaction.Id,
-		Type: models.TransactionType(transaction.Type),
-		From: models.Account{
-			Id: transaction.From,
-		},
-		To: models.Account{
-			Id: transaction.To,
-		},
-		Amount: transaction.Amount,
+	mTransaction := models.Transaction{
+		Id:        transaction.Id,
+		CreatedAt: transaction.CreatedAt,
+		Type:      models.TransactionType(transaction.Type),
+		Amount:    transaction.Amount,
 	}
+
+	if transaction.From.Valid {
+		mTransaction.From = models.Account{
+			Id: uint64(transaction.From.Int64),
+		}
+	}
+
+	if transaction.To.Valid {
+		mTransaction.To = models.Account{
+			Id: uint64(transaction.To.Int64),
+		}
+	}
+
+	return mTransaction
 }

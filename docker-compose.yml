@@ -27,21 +27,21 @@ services:
     networks:
       - money_processing_service
 
-  app:
-    container_name: money_pocessing_service_app
-    build: .
-    environment:
-      - DBHost=db
-      - DBPort=5432
-      - DBLogin=postgres
-      - DBPass=postgres
-    restart: always
-    depends_on:
-      - db
-    ports:
-      - 8888:8888
-    networks:
-      - money_processing_service
+  # app:
+  #   container_name: money_pocessing_service_app
+  #   build: .
+  #   environment:
+  #     - DBHost=db
+  #     - DBPort=5432
+  #     - DBLogin=postgres
+  #     - DBPass=postgres
+  #   restart: always
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - 8888:8888
+  #   networks:
+  #     - money_processing_service
 
 networks:
   money_processing_service:

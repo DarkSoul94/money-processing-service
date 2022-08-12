@@ -280,16 +280,16 @@ func (r *postgreRepo) CreateTransaction(ctx context.Context, mTransaction models
 		err   error
 	)
 
-	query = `INSERT INTO transactions (type, from_account_id, to_account_id, amount) VALUES ($1, $2, $3, $4) RETURNING id`
+	query = `INSERT INTO transactions (created_at, type, from_account_id, to_account_id, amount) VALUES ($1, $2, $3, $4, $5) RETURNING id`
 
 	dbTransaction := r.toDbTransaction(mTransaction)
 
-	err = r.db.GetContext(ctx, &id, query, dbTransaction.Type, dbTransaction.From, dbTransaction.To, dbTransaction.Amount)
+	err = r.db.GetContext(ctx, &id, query, dbTransaction.CreatedAt, dbTransaction.Type, dbTransaction.From, dbTransaction.To, dbTransaction.Amount)
 	if err != nil {
 		logger.LogError(
 			"Create transaction",
 			"app/repo/postgresql/repo",
-			fmt.Sprintf("type: %d,from: %d,to: %d,value: %d,", dbTransaction.Type, dbTransaction.From, dbTransaction.To, dbTransaction.Amount),
+			fmt.Sprintf("type: %d,from: %d,to: %d,value: %d,", dbTransaction.Type, dbTransaction.From.Int64, dbTransaction.To.Int64, dbTransaction.Amount),
 			err,
 		)
 		return uuid.Nil, errors.New("failed insert transaction to db")
