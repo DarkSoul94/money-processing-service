@@ -27,8 +27,8 @@ func (h *Handler) CreateClient(c *gin.Context) {
 		return
 	}
 
-	ctx, cansel := context.WithCancel(c)
-	defer cansel()
+	ctx, cancel := context.WithCancel(c)
+	defer cancel()
 
 	id, err := h.uc.CreateClient(ctx, h.toModelClient(client))
 	if err != nil {
@@ -46,8 +46,8 @@ func (h *Handler) GetClientByID(c *gin.Context) {
 		return
 	}
 
-	ctx, cansel := context.WithCancel(c)
-	defer cansel()
+	ctx, cancel := context.WithCancel(c)
+	defer cancel()
 
 	mClient, idList, err := h.uc.GetClientByID(ctx, id)
 	if err != nil {
@@ -66,10 +66,10 @@ func (h *Handler) CreateAccount(c *gin.Context) {
 		return
 	}
 
-	ctx, cansel := context.WithCancel(c)
-	defer cansel()
+	ctx, cancel := context.WithCancel(c)
+	defer cancel()
 
-	id, err := h.uc.CreateAccount(ctx, h.toModelAccount(account))
+	id, err := h.uc.CreateAccount(ctx, account.CurrencyID, account.ClientID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, map[string]interface{}{"status": "error", "error": err.Error()})
 		return
@@ -85,8 +85,8 @@ func (h *Handler) GetAccountByID(c *gin.Context) {
 		return
 	}
 
-	ctx, cansel := context.WithCancel(c)
-	defer cansel()
+	ctx, cancel := context.WithCancel(c)
+	defer cancel()
 
 	mAccount, err := h.uc.GetAccountByID(ctx, id)
 	if err != nil {
@@ -105,8 +105,8 @@ func (h *Handler) CreateTransaction(c *gin.Context) {
 		return
 	}
 
-	ctx, cansel := context.WithCancel(c)
-	defer cansel()
+	ctx, cancel := context.WithCancel(c)
+	defer cancel()
 
 	id, err := h.uc.CreateTransaction(ctx, h.toModelTransction(transaction))
 	if err != nil {
@@ -124,8 +124,8 @@ func (h *Handler) GetTransactionsListByAccountID(c *gin.Context) {
 		return
 	}
 
-	ctx, cansel := context.WithCancel(c)
-	defer cansel()
+	ctx, cancel := context.WithCancel(c)
+	defer cancel()
 
 	mTransactionsList, err := h.uc.GetTransactionsListByAccountID(ctx, id)
 	if err != nil {

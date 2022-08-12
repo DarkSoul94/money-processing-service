@@ -46,21 +46,16 @@ type dbAccount struct {
 	Ballance   decimal.Decimal `db:"ballance"`
 }
 
-func (r *postgreRepo) toDbAccount(account models.Account) dbAccount {
+func (r *postgreRepo) toDbAccount(account models.Account, clientID uint64) dbAccount {
 	return dbAccount{
 		Id:         account.Id,
-		ClientID:   account.Client.Id,
+		ClientID:   clientID,
 		CurrencyID: account.Currency.Id,
 		Ballance:   account.Ballance,
 	}
 }
 
 func (r *postgreRepo) toModelAccount(ctx context.Context, account dbAccount) (models.Account, error) {
-	client, err := r.GetClientByID(ctx, account.ClientID)
-	if err != nil {
-		return models.Account{}, err
-	}
-
 	currency, err := r.GetCurrencyByID(ctx, account.CurrencyID)
 	if err != nil {
 		return models.Account{}, err
@@ -68,7 +63,6 @@ func (r *postgreRepo) toModelAccount(ctx context.Context, account dbAccount) (mo
 
 	return models.Account{
 		Id:       account.Id,
-		Client:   client,
 		Currency: currency,
 		Ballance: account.Ballance,
 	}, nil

@@ -7,6 +7,7 @@ import (
 	"github.com/DarkSoul94/money-processing-service/app"
 	"github.com/DarkSoul94/money-processing-service/models"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 type usecase struct {
@@ -37,8 +38,12 @@ func (u *usecase) GetClientByID(ctx context.Context, id uint64) (models.Client, 
 	return client, idList, nil
 }
 
-func (u *usecase) CreateAccount(ctx context.Context, account models.Account) (uint64, error) {
-	return u.repo.CreateAccount(ctx, account)
+func (u *usecase) CreateAccount(ctx context.Context, currencyID uint, clientID uint64) (uint64, error) {
+	account := models.Account{
+		Currency: models.Currency{Id: currencyID},
+		Ballance: decimal.Decimal{},
+	}
+	return u.repo.CreateAccount(ctx, account, clientID)
 }
 
 func (u *usecase) GetAccountByID(ctx context.Context, id uint64) (models.Account, error) {

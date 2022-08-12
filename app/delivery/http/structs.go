@@ -32,18 +32,6 @@ type newAccount struct {
 	CurrencyID uint   `json:"currency_id"`
 }
 
-func (h *Handler) toModelAccount(account newAccount) models.Account {
-	return models.Account{
-		Client: models.Client{
-			Id: account.ClientID,
-		},
-		Currency: models.Currency{
-			Id: account.CurrencyID,
-		},
-		Ballance: decimal.Decimal{},
-	}
-}
-
 type outCurrency struct {
 	Id   uint   `json:"id"`
 	Name string `json:"name"`
@@ -58,7 +46,6 @@ func (h *Handler) toOutCurrency(currency models.Currency) outCurrency {
 
 type outAccount struct {
 	Id       uint64          `json:"id"`
-	Client   outClient       `json:"client"`
 	Currency outCurrency     `json:"currency"`
 	Ballance decimal.Decimal `json:"ballance"`
 }
@@ -66,7 +53,6 @@ type outAccount struct {
 func (h *Handler) toOutAccount(account models.Account) outAccount {
 	return outAccount{
 		Id:       account.Id,
-		Client:   h.toOutClient(account.Client),
 		Currency: h.toOutCurrency(account.Currency),
 		Ballance: account.Ballance,
 	}
@@ -95,16 +81,16 @@ func (h *Handler) toModelTransction(transaction newTransaction) models.Transacti
 type outTransaction struct {
 	Id     string `json:"id"`
 	Type   string `json:"type"`
-	From   string `json:"from"`
-	To     string `json:"to"`
+	From   uint64 `json:"from"`
+	To     uint64 `json:"to"`
 	Amount string `json:"amount"`
 }
 
 func (h *Handler) toOutTransaction(mTransaction models.Transaction) outTransaction {
 	transaction := outTransaction{
 		Id:     mTransaction.Id.String(),
-		From:   mTransaction.From.Client.Name,
-		To:     mTransaction.To.Client.Name,
+		From:   mTransaction.From.Id,
+		To:     mTransaction.To.Id,
 		Amount: mTransaction.Amount.String(),
 	}
 

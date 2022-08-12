@@ -118,7 +118,7 @@ func (r *postgreRepo) GetCurrencyByID(ctx context.Context, id uint) (models.Curr
 	return r.toModelCurrency(currency), nil
 }
 
-func (r *postgreRepo) CreateAccount(ctx context.Context, mAccount models.Account) (uint64, error) {
+func (r *postgreRepo) CreateAccount(ctx context.Context, mAccount models.Account, clientID uint64) (uint64, error) {
 	var (
 		account dbAccount
 		query   string
@@ -126,7 +126,7 @@ func (r *postgreRepo) CreateAccount(ctx context.Context, mAccount models.Account
 		err     error
 	)
 
-	account = r.toDbAccount(mAccount)
+	account = r.toDbAccount(mAccount, clientID)
 
 	query = `INSERT INTO accounts (client_id, currency_id, ballance) VALUES ($1, $2, $3) RETURNING id`
 
@@ -320,30 +320,7 @@ func (r *postgreRepo) GetTransactionsListByAccountID(ctx context.Context, accoun
 	}
 
 	for _, dbTransaction := range dbTransactionsList {
-		mTransaction := r.toModelTransaction(dbTransaction)
-		mTransaction.From, err = r.GetAccountByID(ctx, mTransaction.From.Id)
-		if err != nil {
-			logger.LogError(
-				"Get 'from' account",
-				"app/repo/postgresql/repo",
-				fmt.Sprintf("account id: %d", mTransaction.From.Id),
-				err,
-			)
-			return nil, errors.New("failed select 'from' account from db")
-		}
-
-		mTransaction.To, err = r.GetAccountByID(ctx, mTransaction.To.Id)
-		if err != nil {
-			logger.LogError(
-				"Get 'to' account",
-				"app/repo/postgresql/repo",
-				fmt.Sprintf("account id: %d", mTransaction.To.Id),
-				err,
-			)
-			return nil, errors.New("failed select 'to' account from db")
-		}
-
-		mTransactionsList = append(mTransactionsList, mTransaction)
+		mTransactionsList = append(mTransactionsList, r.toModelTransaction(dbTransaction))
 	}
 
 	return mTransactionsList, nil
