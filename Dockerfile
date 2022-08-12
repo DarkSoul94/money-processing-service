@@ -10,4 +10,5 @@ WORKDIR /usr/local/bin
 RUN apk --no-cache add ca-certificates
 COPY --from=builder /usr/local/bin/bin .
 COPY --from=builder /usr/local/bin/config/config.yml ./config/
+COPY --from=builder /usr/local/bin/migrations/ ./migrations/
 CMD [ "app" ]

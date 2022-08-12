@@ -1,5 +1,5 @@
 release: false
-name: 'todo-app'
+name: 'app-name'
 http_port: 8888
 log:
   dir: 'logs'
@@ -10,4 +10,3 @@ db:
   host: ''
   port: ''
   name: ''
-  args: 'parseTime=true&multiStatements=true'
