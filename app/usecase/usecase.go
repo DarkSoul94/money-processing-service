@@ -2,11 +2,12 @@ package usecase
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"time"
 
 	"github.com/DarkSoul94/money-processing-service/app"
 	"github.com/DarkSoul94/money-processing-service/models"
+	"github.com/DarkSoul94/money-processing-service/pkg/logger"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
@@ -63,12 +64,18 @@ func (u *usecase) CreateTransaction(ctx context.Context, transaction models.Tran
 		return u.transferMoney(ctx, transaction)
 	}
 
-	return uuid.UUID{}, errors.New("invalid transaction type")
+	return uuid.UUID{}, errInvalidTransactionType
 }
 
 func (u *usecase) depositMoney(ctx context.Context, transaction models.Transaction) (uuid.UUID, error) {
 	if transaction.To.Id == 0 {
-		return uuid.UUID{}, errors.New("invalid account")
+		logger.LogError(
+			"Deposit money",
+			"app/usecase/usecase",
+			"",
+			errZeroAccountID,
+		)
+		return uuid.UUID{}, errZeroAccountID
 	}
 
 	transaction.From = models.Account{
@@ -90,7 +97,13 @@ func (u *usecase) depositMoney(ctx context.Context, transaction models.Transacti
 
 func (u *usecase) withdrawMoney(ctx context.Context, transaction models.Transaction) (uuid.UUID, error) {
 	if transaction.From.Id == 0 {
-		return uuid.UUID{}, errors.New("invalid account")
+		logger.LogError(
+			"Withdraw money",
+			"app/usecase/usecase",
+			"",
+			errZeroAccountID,
+		)
+		return uuid.UUID{}, errZeroAccountID
 	}
 
 	transaction.To = models.Account{
@@ -103,7 +116,13 @@ func (u *usecase) withdrawMoney(ctx context.Context, transaction models.Transact
 	}
 
 	if res := account.Ballance.Cmp(transaction.Amount); res == -1 {
-		return uuid.UUID{}, errors.New("not enough money")
+		logger.LogError(
+			"Withdraw money",
+			"app/usecase/usecase",
+			"",
+			errNotMoney,
+		)
+		return uuid.UUID{}, errNotMoney
 	}
 
 	err = u.repo.UpdateBalance(ctx, transaction.From.Id, account.Ballance.Sub(transaction.Amount))
@@ -116,11 +135,24 @@ func (u *usecase) withdrawMoney(ctx context.Context, transaction models.Transact
 
 func (u *usecase) transferMoney(ctx context.Context, transaction models.Transaction) (uuid.UUID, error) {
 	if transaction.From.Id == 0 || transaction.To.Id == 0 {
-		return uuid.UUID{}, errors.New("invalid account")
+		logger.LogError(
+			"Transfer money",
+			"app/usecase/usecase",
+			"",
+			errZeroAccountID,
+		)
+		return uuid.UUID{}, errZeroAccountID
 	}
 
 	if transaction.From.Id == transaction.To.Id {
-		return uuid.UUID{}, errors.New("accounts must by different")
+		logger.LogError(
+			"Transfer money",
+			"app/usecase/usecase",
+			fmt.Sprintf("accounts id: %d", transaction.From.Id),
+			errSameAccount,
+		)
+
+		return uuid.UUID{}, errSameAccount
 	}
 
 	fromAccount, err := u.repo.GetAccountByID(ctx, transaction.From.Id)
@@ -134,11 +166,24 @@ func (u *usecase) transferMoney(ctx context.Context, transaction models.Transact
 	}
 
 	if fromAccount.Currency.Id != toAccount.Currency.Id {
-		return uuid.UUID{}, errors.New("accounts with different currencies")
+		logger.LogError(
+			"Transfer money",
+			"app/usecase/usecase",
+			fmt.Sprintf("from account currency id: %d, to account currency id: %d", fromAccount.Currency.Id, toAccount.Currency.Id),
+			errDifferentCurrencies,
+		)
+
+		return uuid.UUID{}, errDifferentCurrencies
 	}
 
 	if res := fromAccount.Ballance.Cmp(transaction.Amount); res == -1 {
-		return uuid.UUID{}, errors.New("not enough money")
+		logger.LogError(
+			"Withdraw money",
+			"app/usecase/usecase",
+			"",
+			errNotMoney,
+		)
+		return uuid.UUID{}, errNotMoney
 	}
 
 	fromAccount.Ballance = fromAccount.Ballance.Sub(transaction.Amount)
