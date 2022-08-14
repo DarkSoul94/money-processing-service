@@ -28,7 +28,7 @@ services:
       - money_processing_service
 
   app:
-    container_name: money_pocessing_service_app
+    image: darksoul94/money-processing-sevice:latest
     build: .
     environment:
       - DBHost=db
