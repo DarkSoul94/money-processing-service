@@ -1,7 +1,6 @@
 package http
 
 import (
-	"github.com/DarkSoul94/money-processing-service/consts"
 	"github.com/DarkSoul94/money-processing-service/models"
 	"github.com/gin-gonic/gin"
 	"github.com/shopspring/decimal"
@@ -92,7 +91,7 @@ type outTransaction struct {
 func (h *Handler) toOutTransaction(mTransaction models.Transaction) outTransaction {
 	transaction := outTransaction{
 		Id:        mTransaction.Id.String(),
-		CreatedAt: mTransaction.CreatedAt.Format(consts.OutTransactionTime),
+		CreatedAt: mTransaction.CreatedAt.Format("02.01.2006 15:04:05"),
 		From:      mTransaction.From.Id,
 		To:        mTransaction.To.Id,
 		Amount:    mTransaction.Amount.String(),
