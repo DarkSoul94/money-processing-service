@@ -103,6 +103,18 @@ const docTemplate = `{
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/app_delivery_http.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app_delivery_http.errorResponse"
+                        }
                     }
                 }
             }
@@ -201,6 +213,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "app_delivery_http.errorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "app_delivery_http.newAccount": {
             "type": "object",
             "properties": {
@@ -292,6 +312,14 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
                     "type": "string"
                 }
             }

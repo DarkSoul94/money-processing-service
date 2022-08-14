@@ -1,5 +1,10 @@
 basePath: /api
 definitions:
+  app_delivery_http.errorResponse:
+    properties:
+      error:
+        type: string
+    type: object
   app_delivery_http.newAccount:
     properties:
       client_id:
@@ -59,6 +64,11 @@ definitions:
       to:
         type: integer
       type:
+        type: string
+    type: object
+  github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse:
+    properties:
+      error:
         type: string
     type: object
   github.com_DarkSoul94_money-processing-service_app_delivery_http.newAccount:
@@ -187,6 +197,14 @@ paths:
           description: Client ID
           schema:
             type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/app_delivery_http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app_delivery_http.errorResponse'
       summary: Create client
   /client/{id}:
     get:

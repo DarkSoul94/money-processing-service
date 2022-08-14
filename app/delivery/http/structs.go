@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/DarkSoul94/money-processing-service/consts"
 	"github.com/DarkSoul94/money-processing-service/models"
+	"github.com/gin-gonic/gin"
 	"github.com/shopspring/decimal"
 )
 
@@ -107,4 +108,12 @@ func (h *Handler) toOutTransaction(mTransaction models.Transaction) outTransacti
 	}
 
 	return transaction
+}
+
+type errorResponse struct {
+	Error string `json:"error"`
+}
+
+func (h *Handler) newErrorResponse(c *gin.Context, statusCode int, err error) {
+	c.AbortWithStatusJSON(statusCode, errorResponse{err.Error()})
 }
