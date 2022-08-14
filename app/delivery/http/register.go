@@ -3,18 +3,30 @@ package http
 import (
 	"github.com/DarkSoul94/money-processing-service/app"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// RegisterHTTPEndpoints ...
 func RegisterHTTPEndpoints(router *gin.RouterGroup, uc app.Usecase) {
 	h := NewHandler(uc)
 
-	router.POST("/client", h.CreateClient)
-	router.GET("/client/:id", h.GetClientByID)
+	clientApi := router.Group("/client")
+	{
+		clientApi.POST("", h.CreateClient)
+		clientApi.GET(":id", h.GetClientByID)
+	}
 
-	router.POST("/account", h.CreateAccount)
-	router.GET("/account/:id", h.GetAccountByID)
+	accountApi := router.Group("/account")
+	{
+		accountApi.POST("", h.CreateAccount)
+		accountApi.GET(":id", h.GetAccountByID)
+	}
 
-	router.POST("/transaction", h.CreateTransaction)
-	router.GET("/transaction/:id", h.GetTransactionsListByAccountID)
+	transactionApi := router.Group("/transaction")
+	{
+		transactionApi.POST("", h.CreateTransaction)
+		transactionApi.GET(":id", h.GetTransactionsListByAccountID)
+	}
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }

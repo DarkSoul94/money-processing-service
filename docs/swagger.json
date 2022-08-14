@@ -1,0 +1,388 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Service implement test task",
+        "title": "Money porcessing service",
+        "contact": {},
+        "version": "0.0.1"
+    },
+    "host": "localhost:8888",
+    "basePath": "/api",
+    "paths": {
+        "/account": {
+            "post": {
+                "description": "Create account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create account",
+                "parameters": [
+                    {
+                        "description": "Client id",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/app_delivery_http.newAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Account ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "/account/{id}": {
+            "get": {
+                "description": "Get account by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get account",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Account id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app_delivery_http.outAccount"
+                        }
+                    }
+                }
+            }
+        },
+        "/client": {
+            "post": {
+                "description": "Create client",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create client",
+                "parameters": [
+                    {
+                        "description": "Client name",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/app_delivery_http.newClient"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Client ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "/client/{id}": {
+            "get": {
+                "description": "Get client by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get client",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Client id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app_delivery_http.outClient"
+                        }
+                    }
+                }
+            }
+        },
+        "/transaction": {
+            "post": {
+                "description": "Create transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create transaction",
+                "parameters": [
+                    {
+                        "description": "transaction type",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/app_delivery_http.newTransaction"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "/transaction/{id}": {
+            "get": {
+                "description": "Get transactions list by account id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get transactions list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Account id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/app_delivery_http.outTransaction"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "app_delivery_http.newAccount": {
+            "type": "object",
+            "properties": {
+                "client_id": {
+                    "type": "integer"
+                },
+                "currency_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "app_delivery_http.newClient": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "app_delivery_http.newTransaction": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "from_account_id": {
+                    "type": "integer"
+                },
+                "to_account_id": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "integer"
+                }
+            }
+        },
+        "app_delivery_http.outAccount": {
+            "type": "object",
+            "properties": {
+                "ballance": {
+                    "type": "number"
+                },
+                "currency": {
+                    "$ref": "#/definitions/app_delivery_http.outCurrency"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "app_delivery_http.outClient": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "app_delivery_http.outCurrency": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "app_delivery_http.outTransaction": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "github.com_DarkSoul94_money-processing-service_app_delivery_http.newAccount": {
+            "type": "object",
+            "properties": {
+                "client_id": {
+                    "type": "integer"
+                },
+                "currency_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github.com_DarkSoul94_money-processing-service_app_delivery_http.newClient": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "github.com_DarkSoul94_money-processing-service_app_delivery_http.newTransaction": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "from_account_id": {
+                    "type": "integer"
+                },
+                "to_account_id": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github.com_DarkSoul94_money-processing-service_app_delivery_http.outAccount": {
+            "type": "object",
+            "properties": {
+                "ballance": {
+                    "type": "number"
+                },
+                "currency": {
+                    "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.outCurrency"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github.com_DarkSoul94_money-processing-service_app_delivery_http.outClient": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "github.com_DarkSoul94_money-processing-service_app_delivery_http.outCurrency": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "github.com_DarkSoul94_money-processing-service_app_delivery_http.outTransaction": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "from": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

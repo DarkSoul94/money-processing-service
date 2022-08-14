@@ -1,0 +1,251 @@
+basePath: /api
+definitions:
+  app_delivery_http.newAccount:
+    properties:
+      client_id:
+        type: integer
+      currency_id:
+        type: integer
+    type: object
+  app_delivery_http.newClient:
+    properties:
+      name:
+        type: string
+    type: object
+  app_delivery_http.newTransaction:
+    properties:
+      amount:
+        type: number
+      from_account_id:
+        type: integer
+      to_account_id:
+        type: integer
+      type:
+        type: integer
+    type: object
+  app_delivery_http.outAccount:
+    properties:
+      ballance:
+        type: number
+      currency:
+        $ref: '#/definitions/app_delivery_http.outCurrency'
+      id:
+        type: integer
+    type: object
+  app_delivery_http.outClient:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  app_delivery_http.outCurrency:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  app_delivery_http.outTransaction:
+    properties:
+      amount:
+        type: string
+      created_at:
+        type: string
+      from:
+        type: integer
+      id:
+        type: string
+      to:
+        type: integer
+      type:
+        type: string
+    type: object
+  github.com_DarkSoul94_money-processing-service_app_delivery_http.newAccount:
+    properties:
+      client_id:
+        type: integer
+      currency_id:
+        type: integer
+    type: object
+  github.com_DarkSoul94_money-processing-service_app_delivery_http.newClient:
+    properties:
+      name:
+        type: string
+    type: object
+  github.com_DarkSoul94_money-processing-service_app_delivery_http.newTransaction:
+    properties:
+      amount:
+        type: number
+      from_account_id:
+        type: integer
+      to_account_id:
+        type: integer
+      type:
+        type: integer
+    type: object
+  github.com_DarkSoul94_money-processing-service_app_delivery_http.outAccount:
+    properties:
+      ballance:
+        type: number
+      currency:
+        $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.outCurrency'
+      id:
+        type: integer
+    type: object
+  github.com_DarkSoul94_money-processing-service_app_delivery_http.outClient:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  github.com_DarkSoul94_money-processing-service_app_delivery_http.outCurrency:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  github.com_DarkSoul94_money-processing-service_app_delivery_http.outTransaction:
+    properties:
+      amount:
+        type: string
+      created_at:
+        type: string
+      from:
+        type: integer
+      id:
+        type: string
+      to:
+        type: integer
+      type:
+        type: string
+    type: object
+host: localhost:8888
+info:
+  contact: {}
+  description: Service implement test task
+  title: Money porcessing service
+  version: 0.0.1
+paths:
+  /account:
+    post:
+      consumes:
+      - application/json
+      description: Create account
+      parameters:
+      - description: Client id
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/app_delivery_http.newAccount'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Account ID
+          schema:
+            type: integer
+      summary: Create account
+  /account/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get account by id
+      parameters:
+      - description: Account id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app_delivery_http.outAccount'
+      summary: Get account
+  /client:
+    post:
+      consumes:
+      - application/json
+      description: Create client
+      parameters:
+      - description: Client name
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/app_delivery_http.newClient'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Client ID
+          schema:
+            type: integer
+      summary: Create client
+  /client/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get client by id
+      parameters:
+      - description: Client id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app_delivery_http.outClient'
+      summary: Get client
+  /transaction:
+    post:
+      consumes:
+      - application/json
+      description: Create transaction
+      parameters:
+      - description: transaction type
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/app_delivery_http.newTransaction'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction ID
+          schema:
+            type: integer
+      summary: Create transaction
+  /transaction/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get transactions list by account id
+      parameters:
+      - description: Account id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/app_delivery_http.outTransaction'
+            type: array
+      summary: Get transactions list
+swagger: "2.0"

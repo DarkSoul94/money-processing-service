@@ -10,5 +10,8 @@ br:
 clean:
 	rm -rf .bin
 
+docs:
+	swag init --parseDependency --parseInternal -g .\cmd\main.go
+
 default:
 	build
