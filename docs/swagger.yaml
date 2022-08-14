@@ -150,7 +150,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/app_delivery_http.newAccount'
+          $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.newAccount'
       produces:
       - application/json
       responses:
@@ -158,6 +158,14 @@ paths:
           description: Account ID
           schema:
             type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse'
       summary: Create account
   /account/{id}:
     get:
@@ -176,7 +184,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/app_delivery_http.outAccount'
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.outAccount'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse'
       summary: Get account
   /client:
     post:
@@ -189,7 +205,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/app_delivery_http.newClient'
+          $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.newClient'
       produces:
       - application/json
       responses:
@@ -200,11 +216,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/app_delivery_http.errorResponse'
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/app_delivery_http.errorResponse'
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse'
       summary: Create client
   /client/{id}:
     get:
@@ -223,7 +239,17 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/app_delivery_http.outClient'
+            items:
+              type: integer
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse'
       summary: Get client
   /transaction:
     post:
@@ -236,7 +262,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/app_delivery_http.newTransaction'
+          $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.newTransaction'
       produces:
       - application/json
       responses:
@@ -244,6 +270,14 @@ paths:
           description: Transaction ID
           schema:
             type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse'
       summary: Create transaction
   /transaction/{id}:
     get:
@@ -263,7 +297,15 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/app_delivery_http.outTransaction'
+              $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.outTransaction'
             type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse'
       summary: Get transactions list
 swagger: "2.0"

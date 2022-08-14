@@ -33,7 +33,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/app_delivery_http.newAccount"
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.newAccount"
                         }
                     }
                 ],
@@ -42,6 +42,18 @@ const docTemplate = `{
                         "description": "Account ID",
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse"
                         }
                     }
                 }
@@ -70,7 +82,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/app_delivery_http.outAccount"
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.outAccount"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse"
                         }
                     }
                 }
@@ -93,7 +117,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/app_delivery_http.newClient"
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.newClient"
                         }
                     }
                 ],
@@ -107,13 +131,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/app_delivery_http.errorResponse"
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/app_delivery_http.errorResponse"
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse"
                         }
                     }
                 }
@@ -142,7 +166,22 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/app_delivery_http.outClient"
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse"
                         }
                     }
                 }
@@ -165,7 +204,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/app_delivery_http.newTransaction"
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.newTransaction"
                         }
                     }
                 ],
@@ -174,6 +213,18 @@ const docTemplate = `{
                         "description": "Transaction ID",
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse"
                         }
                     }
                 }
@@ -204,8 +255,20 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/app_delivery_http.outTransaction"
+                                "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.outTransaction"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github.com_DarkSoul94_money-processing-service_app_delivery_http.errorResponse"
                         }
                     }
                 }
